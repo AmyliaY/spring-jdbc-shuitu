@@ -16,7 +16,7 @@ import javax.core.common.utils.StringUtils;
 
 /**
  * 根据QueryRule自动构建sql语句
- * @author Tom
+ * @author 全恒
  *
  */
 public class QueryRuleSqlBulider {

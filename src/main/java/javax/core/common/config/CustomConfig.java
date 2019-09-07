@@ -12,7 +12,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 
 /**
  * 加载自定义配置
- * @author Tom
+ * @author 全恒
  */
 public class CustomConfig extends PropertyPlaceholderConfigurer{
 	

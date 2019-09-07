@@ -25,6 +25,7 @@
 		</property>
 	</bean>
 	
+	<!-- 定义db.properties和system.properties文件的默认位置 -->
 	<bean id="propertyConfigurer" class="javax.core.common.config.CustomConfig">
 		<property name="locations">
 			<list>

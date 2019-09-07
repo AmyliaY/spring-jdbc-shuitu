@@ -20,123 +20,146 @@ import org.springframework.jdbc.core.RowMapper;
 import javax.core.common.utils.StringUtils;
 
 /**
- * 实体对象的反射操作
- * @author Tom
+ * 实体对象的反射操作，一个EntityOperation对应一个实体类
+ * 
+ * @author 全恒
  *
  * @param <T>
  */
 public class EntityOperation<T> {
-	private Logger log = Logger.getLogger(EntityOperation.class);
-	public Class<T> entityClass = null; // 泛型实体Class对象
-	public final Map<String, PropertyMapping> mappings;
-	public final RowMapper<T> rowMapper;
 	
+	private Logger log = Logger.getLogger(EntityOperation.class);
+	
+	/**
+	 * 泛型实体Class对象，把实体的字节码保存下来，避免每个方法都重复获取class
+	 */
+	public Class<T> entityClass = null;
+	
+	/**
+	 * 初始化时将所有的getter和setter方法保存到这个对象中
+	 */
+	public final Map<String, PropertyMapping> mappings;
+	
+	/**
+	 * Spring的规范
+	 */
+	public final RowMapper<T> rowMapper;
+
 	public final String tableName;
 	public String allColumn = "*";
 	public Field pkField;
-	
-	public EntityOperation(Class<T> clazz,String pk) throws Exception{
-		if(!clazz.isAnnotationPresent(Entity.class)){
+
+	/**
+	 * 通过反射来完成实体类的装载
+	 * @param clazz
+	 * @param pk
+	 * @throws Exception
+	 */
+	public EntityOperation(Class<T> clazz, String pk) throws Exception {
+		if (!clazz.isAnnotationPresent(Entity.class)) {
 			throw new Exception("在" + clazz.getName() + "中没有找到Entity注解，不能做ORM映射");
 		}
 		this.entityClass = clazz;
 		Table table = entityClass.getAnnotation(Table.class);
-	    if (table != null) {
-	    		this.tableName = table.name();
-	    } else {
-	    		this.tableName =  entityClass.getSimpleName();
-	    }
+		if (table != null) {
+			this.tableName = table.name();
+		} else {
+			this.tableName = entityClass.getSimpleName();
+		}
 		Map<String, Method> getters = JdbcClassUtils.findPublicGetters(entityClass);
-	    Map<String, Method> setters = JdbcClassUtils.findPublicSetters(entityClass);
-	    Field[] fields = JdbcClassUtils.findFields(entityClass);
-	    fillPkFieldAndAllColumn(pk,fields);
-	    this.mappings = getPropertyMappings(getters, setters, fields);
-	    this.allColumn = this.mappings.keySet().toString().replace("[", "").replace("]","").replaceAll(" ","");
-	    this.rowMapper = createRowMapper();
+		Map<String, Method> setters = JdbcClassUtils.findPublicSetters(entityClass);
+		Field[] fields = JdbcClassUtils.findFields(entityClass);
+		fillPkFieldAndAllColumn(pk, fields);
+		this.mappings = getPropertyMappings(getters, setters, fields);
+		this.allColumn = this.mappings.keySet().toString().replace("[", "").replace("]", "").replaceAll(" ", "");
+		this.rowMapper = createRowMapper();
 	}
-	
-	 Map<String, PropertyMapping> getPropertyMappings(Map<String, Method> getters, Map<String, Method> setters, Field[] fields) {
-        Map<String, PropertyMapping> mappings = new HashMap<String, PropertyMapping>();
-        String name;
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(Transient.class))
-                continue;
-            name = field.getName();
-            if(name.startsWith("is")){
-            	name = name.substring(2);
-            }
-            name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
-            Method setter = setters.get(name);
-            Method getter = getters.get(name);
-            if (setter == null || getter == null){
-                continue;
-            }
-            Column column = field.getAnnotation(Column.class);
-            if (column == null) {
-                mappings.put(field.getName(), new PropertyMapping(getter, setter, field));
-            } else {
-                mappings.put(column.name(), new PropertyMapping(getter, setter, field));
-            }
-        }
-        return mappings;
-    }
-	 
+
+	Map<String, PropertyMapping> getPropertyMappings(Map<String, Method> getters, Map<String, Method> setters,
+			Field[] fields) {
+		Map<String, PropertyMapping> mappings = new HashMap<String, PropertyMapping>();
+		String name;
+		for (Field field : fields) {
+			if (field.isAnnotationPresent(Transient.class))
+				continue;
+			name = field.getName();
+			if (name.startsWith("is")) {
+				name = name.substring(2);
+			}
+			name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
+			Method setter = setters.get(name);
+			Method getter = getters.get(name);
+			if (setter == null || getter == null) {
+				continue;
+			}
+			Column column = field.getAnnotation(Column.class);
+			if (column == null) {
+				mappings.put(field.getName(), new PropertyMapping(getter, setter, field));
+			} else {
+				mappings.put(column.name(), new PropertyMapping(getter, setter, field));
+			}
+		}
+		return mappings;
+	}
+
+	//具体的ORM实现过程，列名和值自动匹配
 	RowMapper<T> createRowMapper() {
-	        return new RowMapper<T>() {
-	            public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-	                try {
-	                    T t = entityClass.newInstance();
-	                    ResultSetMetaData meta = rs.getMetaData();
-	                    int columns = meta.getColumnCount();
-	                    String columnName;
-	                    for (int i = 1; i <= columns; i++) {
-	                        Object value = rs.getObject(i);
-	                        columnName = meta.getColumnName(i);
-	                        fillBeanFieldValue(t,columnName,value);
-	                    }
-	                    return t;
-	                }catch (Exception e) {
-	                    throw new RuntimeException(e);
-	                }
-	            }
-	        };
-	    }
+		//返回一个实现了RowMapper接口的 匿名内部类
+		return new RowMapper<T>() {
+			public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+				try {
+					T t = entityClass.newInstance();
+					ResultSetMetaData meta = rs.getMetaData();
+					int columns = meta.getColumnCount();
+					String columnName;
+					for (int i = 1; i <= columns; i++) {
+						Object value = rs.getObject(i);
+						columnName = meta.getColumnName(i);
+						fillBeanFieldValue(t, columnName, value);
+					}
+					return t;
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		};
+	}
 
 	protected void fillBeanFieldValue(T t, String columnName, Object value) {
-		 if (value != null) {
-             PropertyMapping pm = mappings.get(columnName);
-             if (pm != null) {
-                 try {
+		if (value != null) {
+			PropertyMapping pm = mappings.get(columnName);
+			if (pm != null) {
+				try {
 					pm.set(t, value);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-             }
-         }
+			}
+		}
 	}
 
 	private void fillPkFieldAndAllColumn(String pk, Field[] fields) {
-		//设定主键
-	    try {
-	    	if(!StringUtils.isEmpty(pk)){
-		    	pkField = entityClass.getDeclaredField(pk);
-		    	pkField.setAccessible(true);
-	    	}
-	    } catch (Exception e) {
-	    		log.debug("没找到主键列,主键列名必须与属性名相同");
-	    }
-  		for (int i = 0 ; i < fields.length ;i ++) {
-  			Field f = fields[i];
-  			if(StringUtils.isEmpty(pk)){
-  				Id id = f.getAnnotation(Id.class);
-  				if(id != null){
-  					pkField = f;
-  					break;
-  				}
-  			}
-  		}
+		// 设定主键
+		try {
+			if (!StringUtils.isEmpty(pk)) {
+				pkField = entityClass.getDeclaredField(pk);
+				pkField.setAccessible(true);
+			}
+		} catch (Exception e) {
+			log.debug("没找到主键列,主键列名必须与属性名相同");
+		}
+		for (int i = 0; i < fields.length; i++) {
+			Field f = fields[i];
+			if (StringUtils.isEmpty(pk)) {
+				Id id = f.getAnnotation(Id.class);
+				if (id != null) {
+					pkField = f;
+					break;
+				}
+			}
+		}
 	}
-	  
+
 	public T parse(ResultSet rs) {
 		T t = null;
 		if (null == rs) {
@@ -151,7 +174,7 @@ public class EntityOperation<T> {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				fillBeanFieldValue(t,columnName,value);
+				fillBeanFieldValue(t, columnName, value);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -162,7 +185,7 @@ public class EntityOperation<T> {
 	public Map<String, Object> parse(T t) {
 		Map<String, Object> _map = new HashMap<String, Object>();
 		try {
-			
+
 			for (String columnName : mappings.keySet()) {
 				Object value = mappings.get(columnName).getter.invoke(t);
 				if (value == null)
@@ -192,43 +215,44 @@ public class EntityOperation<T> {
 
 class PropertyMapping {
 
-    final boolean insertable;
-    final boolean updatable;
-    final String columnName;
-    final boolean id;
-    final Method getter;
-    final Method setter;
+	final boolean insertable;
+	final boolean updatable;
+	final String columnName;
+	final boolean id;
+	final Method getter;
+	final Method setter;
 	final Class enumClass;
-    final String fieldName;
+	final String fieldName;
 
-    public PropertyMapping(Method getter, Method setter, Field field) {
-        this.getter = getter;
-        this.setter = setter;
-        this.enumClass = getter.getReturnType().isEnum() ? getter.getReturnType() : null;
-        Column column = field.getAnnotation(Column.class);
-        this.insertable = column == null || column.insertable();
-        this.updatable = column == null || column.updatable();
-        this.columnName = column == null ? JdbcClassUtils.getGetterName(getter) : ("".equals(column.name()) ? JdbcClassUtils.getGetterName(getter) : column.name());
-        this.id = field.isAnnotationPresent(Id.class);
-        this.fieldName = field.getName();
-    }
+	public PropertyMapping(Method getter, Method setter, Field field) {
+		this.getter = getter;
+		this.setter = setter;
+		this.enumClass = getter.getReturnType().isEnum() ? getter.getReturnType() : null;
+		Column column = field.getAnnotation(Column.class);
+		this.insertable = column == null || column.insertable();
+		this.updatable = column == null || column.updatable();
+		this.columnName = column == null ? JdbcClassUtils.getGetterName(getter)
+				: ("".equals(column.name()) ? JdbcClassUtils.getGetterName(getter) : column.name());
+		this.id = field.isAnnotationPresent(Id.class);
+		this.fieldName = field.getName();
+	}
 
-    @SuppressWarnings("unchecked")
-    Object get(Object target) throws Exception {
-        Object r = getter.invoke(target);
-        return enumClass == null ? r : Enum.valueOf(enumClass, (String) r);
-    }
+	@SuppressWarnings("unchecked")
+	Object get(Object target) throws Exception {
+		Object r = getter.invoke(target);
+		return enumClass == null ? r : Enum.valueOf(enumClass, (String) r);
+	}
 
-    @SuppressWarnings("unchecked")
-    void set(Object target, Object value) throws Exception {
-        if (enumClass != null && value != null) {
-            value = Enum.valueOf(enumClass, (String) value);
-        }
-        //BeanUtils.setProperty(target, fieldName, value);
-        try {
-        	 if(value != null){
-             	 setter.invoke(target, setter.getParameterTypes()[0].cast(value));
-             }
+	@SuppressWarnings("unchecked")
+	void set(Object target, Object value) throws Exception {
+		if (enumClass != null && value != null) {
+			value = Enum.valueOf(enumClass, (String) value);
+		}
+		// BeanUtils.setProperty(target, fieldName, value);
+		try {
+			if (value != null) {
+				setter.invoke(target, setter.getParameterTypes()[0].cast(value));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			/**
@@ -236,7 +260,6 @@ class PropertyMapping {
 			 */
 			System.err.println(fieldName + "--" + value);
 		}
-      
-    }
-}
 
+	}
+}

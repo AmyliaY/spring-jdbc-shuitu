@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 分页对象. 包含当前页数据及分页信息如总记录数.
+ * 分页对象，包含当前页数据及分页信息，如：总记录数
  */
 public class Page<T> implements Serializable {
 
@@ -34,14 +34,10 @@ public class Page<T> implements Serializable {
 	/**
 	 * 默认构造方法.
 	 * 
-	 * @param start
-	 *            本页数据在数据库中的起始位置
-	 * @param totalSize
-	 *            数据库中总记录条数
-	 * @param pageSize
-	 *            本页容量
-	 * @param rows
-	 *            本页包含的数据
+	 * @param start      本页数据在数据库中的起始位置
+	 * @param totalSize  数据库中总记录条数
+	 * @param pageSize   本页容量
+	 * @param rows       本页包含的数据
 	 */
 	public Page(long start, long totalSize, int pageSize, List<T> rows) {
 		this.pageSize = pageSize;
@@ -123,10 +119,8 @@ public class Page<T> implements Serializable {
 	/**
 	 * 获取任一页第一条数据在数据集的位置.
 	 * 
-	 * @param pageNo
-	 *            从1开始的页号
-	 * @param pageSize
-	 *            每页记录条数
+	 * @param pageNo    从1开始的页号
+	 * @param pageSize  每页记录条数
 	 * @return 该页第一条数据
 	 */
 	public static int getStartOfPage(int pageNo, int pageSize) {

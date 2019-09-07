@@ -5,15 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * QueryRule,主要功能用于构造查询条件
+ * QueryRule,主要用于构造查询条件
  * 
- * @author Tom
+ * @author 全恒
  */
-public final class QueryRule implements Serializable
-{
+public final class QueryRule implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 排序规则
+	 */
 	public static final int ASC_ORDER = 101;
 	public static final int DESC_ORDER = 102;
+	
+	/**
+	 * 条件
+	 */
 	public static final int LIKE = 1;
 	public static final int IN = 2;
 	public static final int NOTIN = 3;
@@ -28,13 +36,22 @@ public final class QueryRule implements Serializable
 	public static final int ISNOTNULL = 12;
 	public static final int ISEMPTY = 13;
 	public static final int ISNOTEMPTY = 14;
+	
+	/**
+	 * 逻辑
+	 */
 	public static final int AND = 201;
 	public static final int OR = 202;
+	
+	/**
+	 * 保存所有发查询规则
+	 */
 	private List<Rule> ruleList = new ArrayList<Rule>();
 	private List<QueryRule> queryRuleList = new ArrayList<QueryRule>();
 	private String propertyName;
 
-	private QueryRule() {}
+	private QueryRule() {
+	}
 
 	private QueryRule(String propertyName) {
 		this.propertyName = propertyName;
@@ -43,9 +60,10 @@ public final class QueryRule implements Serializable
 	public static QueryRule getInstance() {
 		return new QueryRule();
 	}
-	
+
 	/**
 	 * 添加升序规则
+	 * 
 	 * @param propertyName
 	 * @return
 	 */
@@ -56,6 +74,7 @@ public final class QueryRule implements Serializable
 
 	/**
 	 * 添加降序规则
+	 * 
 	 * @param propertyName
 	 * @return
 	 */
@@ -108,7 +127,7 @@ public final class QueryRule implements Serializable
 		this.ruleList.add(new Rule(IN, propertyName, values).setAndOr(AND));
 		return this;
 	}
-	
+
 	public QueryRule andNotIn(String propertyName, List<Object> values) {
 		this.ruleList.add(new Rule(NOTIN, propertyName, new Object[] { values }).setAndOr(AND));
 		return this;
@@ -118,7 +137,6 @@ public final class QueryRule implements Serializable
 		this.ruleList.add(new Rule(NOTIN, propertyName, values).setAndOr(OR));
 		return this;
 	}
-	
 
 	public QueryRule andNotEqual(String propertyName, Object value) {
 		this.ruleList.add(new Rule(NOTEQ, propertyName, new Object[] { value }).setAndOr(AND));
@@ -144,8 +162,7 @@ public final class QueryRule implements Serializable
 		this.ruleList.add(new Rule(LE, propertyName, new Object[] { value }).setAndOr(AND));
 		return this;
 	}
-	
-	
+
 	public QueryRule orIsNull(String propertyName) {
 		this.ruleList.add(new Rule(ISNULL, propertyName).setAndOr(OR));
 		return this;
@@ -215,7 +232,6 @@ public final class QueryRule implements Serializable
 		this.ruleList.add(new Rule(LE, propertyName, new Object[] { value }).setAndOr(OR));
 		return this;
 	}
-	
 
 	public List<Rule> getRuleList() {
 		return this.ruleList;
@@ -229,31 +245,37 @@ public final class QueryRule implements Serializable
 		return this.propertyName;
 	}
 
+	/**
+	 * 具体规则
+	 * @author 全恒
+	 *
+	 */
 	protected class Rule implements Serializable {
+		
 		private static final long serialVersionUID = 1L;
-		private int type;	//规则的类型
-		private String property_name;
-		private Object[] values;
-		private int andOr = AND;
+		
+		private int type;             //规则的类型
+		private String property_name; //将规则添加给property_name属性
+		private Object[] values;      //规则的值
+		private int andOr = AND;      //条件规则，默认用and拼接
 
 		public Rule(int paramInt, String paramString) {
 			this.property_name = paramString;
 			this.type = paramInt;
 		}
 
-		public Rule(int paramInt, String paramString,
-				Object[] paramArrayOfObject) {
+		public Rule(int paramInt, String paramString, Object[] paramArrayOfObject) {
 			this.property_name = paramString;
 			this.values = paramArrayOfObject;
 			this.type = paramInt;
 		}
-		
-		public Rule setAndOr(int andOr){
+
+		public Rule setAndOr(int andOr) {
 			this.andOr = andOr;
 			return this;
 		}
-		
-		public int getAndOr(){
+
+		public int getAndOr() {
 			return this.andOr;
 		}
 

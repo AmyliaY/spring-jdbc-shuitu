@@ -16,27 +16,9 @@ import com.shuitu.jdbc.demo.dao.MemberDao;
 @ContextConfiguration(locations = {"classpath*:application-context.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class MemberDaoTest {
-	@Autowired MemberDao memberDao;
 	
-	//2009开发第一版本ibatis
-	//平稳运行了8年，没有出现大的事故
-	//你们的目标：超越Tom老师（只是你们起步的榜样，不是最终的榜样）
-	//如果一旦在业务中出现大的事故，一定要反馈给Tom老师
-	
-	
-	//Tom老师写框架的目的不是为了要出名，也不是为了到得到多少利用
-	//兴趣，解决实际问题（适合自己的才是最好的）
-	//不约而同（感觉到一点，所谓框架不管怎么变，万变不离其宗）
-	
-	
-	//前端UI框架 BootStrap API非常乱
-	//开发EUI（使用像EasyUI一样简单，功能像Ext一样强大）
-	
-	
-	//SpringBoot 很简单，零配置
-	//基于SpringMVC进行了二次开发
-	
-	
+	@Autowired 
+	MemberDao memberDao;
 	
 	//框架做了两件事
 	//1、自动生成SQL语句

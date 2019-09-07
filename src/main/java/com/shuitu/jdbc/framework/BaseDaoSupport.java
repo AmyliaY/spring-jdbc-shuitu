@@ -46,12 +46,10 @@ import com.alibaba.fastjson.util.FieldInfo;
 import com.alibaba.fastjson.util.TypeUtils;
 
 /**
- * BaseDao 扩展类,主要功能是支持自动拼装sql语句，必须继承方可使用 需要重写和实现以下三个方法 //设定主键列 private String
- * getPKColumn() {return "id";} //重写对象反转为Map的方法 protected Map<String, Object>
- * parse(Object entity) {return utils.parse((Entity)entity);} //重写结果反转为对象的方法
- * protected Entity mapRow(ResultSet rs, int rowNum) throws SQLException {return
- * utils.parse(rs);}
- *
+ * BaseDao 扩展类,主要功能是支持自动拼装sql语句，必须继承方可使用 需要重写和实现以下三个方法：
+ * 1、设定主键列 private String getPKColumn() {return "id";} 
+ * 2、重写对象反转为Map的方法 protected Map<String, Object> parse(Object entity) {return utils.parse((Entity)entity);} 
+ * 3、重写结果反转为对象的方法 protected Entity mapRow(ResultSet rs, int rowNum) throws SQLException {return utils.parse(rs);}
  *
  * @author 全恒
  */
@@ -60,8 +58,8 @@ public abstract class BaseDaoSupport<T extends Serializable, PK extends Serializ
 
 	private String tableName = "";
 
-	private SimpleJdbcTemplate jdbcTemplateWrite;
 	private SimpleJdbcTemplate jdbcTemplateReadOnly;
+	private SimpleJdbcTemplate jdbcTemplateWrite;
 
 	private DataSource dataSourceReadOnly;
 	private DataSource dataSourceWrite;
@@ -71,8 +69,6 @@ public abstract class BaseDaoSupport<T extends Serializable, PK extends Serializ
 	@SuppressWarnings("unchecked")
 	protected BaseDaoSupport() {
 		try {
-			// Class<T> entityClass = (Class<T>)((ParameterizedType)
-			// getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 			Class<T> entityClass = GenericsUtils.getSuperClassGenricType(getClass(), 0);
 			op = new EntityOperation<T>(entityClass, this.getPKColumn());
 			this.setTableName(op.tableName);
@@ -564,7 +560,7 @@ public abstract class BaseDaoSupport<T extends Serializable, PK extends Serializ
 	}
 
 	/**
-	 * 查询函数，使用查询规 例如以下代码查询条件为匹配的数据
+	 * 查询函数，使用查询规则，例如以下代码查询条件为匹配的数据
 	 * 
 	 * <pre>
 	 *		<code>
@@ -578,8 +574,7 @@ public abstract class BaseDaoSupport<T extends Serializable, PK extends Serializ
 	 * </code>
 	 * </pre>
 	 * 
-	 * @param queryRule
-	 *            查询规则
+	 * @param queryRule 查询规则
 	 * @return 查询出的结果List
 	 */
 	protected List<T> find(QueryRule queryRule) throws Exception {

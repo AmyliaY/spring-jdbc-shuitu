@@ -3,7 +3,7 @@ package com.shuitu.jdbc.framework;
 
 /**
  * sql排序组件
- * @author Tom
+ * @author 全恒
  */
 public class Order {
 	private boolean ascending; //升序还是降序
