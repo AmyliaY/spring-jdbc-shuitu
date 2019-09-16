@@ -25,12 +25,14 @@ public class DataUtils {
 	/**
 	 * 构造方法，禁止实例化
 	 */
-	private DataUtils() {}
-	
+	private DataUtils() {
+	}
+
 	/** mergePO 时支持的数据类型 */
 	private static Map<Class, String> supportTypeMap = new HashMap<Class, String>();
+
 	static {
-		//基本数据类型
+		// 基本数据类型
 		supportTypeMap.put(Integer.class, "");
 		supportTypeMap.put(Long.class, "");
 		supportTypeMap.put(Double.class, "");
@@ -47,8 +49,8 @@ public class DataUtils {
 		supportTypeMap.put(short.class, "");
 		supportTypeMap.put(float.class, "");
 		supportTypeMap.put(boolean.class, "");
-		
-		//其他常用类型
+
+		// 其他常用类型
 		supportTypeMap.put(Date.class, "");
 		supportTypeMap.put(BigDecimal.class, "");
 		supportTypeMap.put(String.class, "");
@@ -195,22 +197,20 @@ public class DataUtils {
 	 * 
 	 * @param str
 	 *            表达布尔型含义的字符串. <br>
-	 *            合法的输入包括"y","n","yes","no","true","false","t","f","是","否","1","0",""这些字符串的各种大小写形式也属于合法的
-	 *            <br>
+	 *            合法的输入包括"y","n","yes","no","true","false","t","f","是","否","1",
+	 *            "0",""这些字符串的各种大小写形式也属于合法的 <br>
 	 *            除了上述合法的入参值之外，输入其它的字符串，将抛出异常
 	 * @return 布尔变量对应的中文描述："是"/"否"/""
 	 */
 	public static String getBooleanDescribe(String str) {
 		if (str == null) {
 			throw new IllegalArgumentException("argument is null");
-		} 
-		if (str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes")
-				|| str.equalsIgnoreCase("true") || str.equalsIgnoreCase("t")
-				|| str.equalsIgnoreCase("是") || str.equalsIgnoreCase("1")) {
+		}
+		if (str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes") || str.equalsIgnoreCase("true")
+				|| str.equalsIgnoreCase("t") || str.equalsIgnoreCase("是") || str.equalsIgnoreCase("1")) {
 			return "是";
-		} else if (str.equalsIgnoreCase("n") || str.equalsIgnoreCase("no")
-				|| str.equalsIgnoreCase("false") || str.equalsIgnoreCase("f")
-				|| str.equalsIgnoreCase("否") || str.equalsIgnoreCase("0")) {
+		} else if (str.equalsIgnoreCase("n") || str.equalsIgnoreCase("no") || str.equalsIgnoreCase("false")
+				|| str.equalsIgnoreCase("f") || str.equalsIgnoreCase("否") || str.equalsIgnoreCase("0")) {
 			return "否";
 		} else if (str.trim().equals("")) {
 			return "";
@@ -238,8 +238,8 @@ public class DataUtils {
 	 * 
 	 * @param str
 	 *            表达布尔型含义的字符串. <br>
-	 *            合法的输入包括"y","n","yes","no","true","false","t","f","是","否","1","0",""这些字符串的各种大小写形式也属于合法的
-	 *            <br>
+	 *            合法的输入包括"y","n","yes","no","true","false","t","f","是","否","1",
+	 *            "0",""这些字符串的各种大小写形式也属于合法的 <br>
 	 *            除了上述合法的入参值之外，输入其它的字符串，将抛出异常
 	 * @return boolean型的true/false
 	 */
@@ -247,13 +247,11 @@ public class DataUtils {
 		if (str == null) {
 			throw new IllegalArgumentException("argument is null");
 		}
-		if (str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes")
-				|| str.equalsIgnoreCase("true") || str.equalsIgnoreCase("t")
-				|| str.equalsIgnoreCase("是") || str.equalsIgnoreCase("1")) {
+		if (str.equalsIgnoreCase("y") || str.equalsIgnoreCase("yes") || str.equalsIgnoreCase("true")
+				|| str.equalsIgnoreCase("t") || str.equalsIgnoreCase("是") || str.equalsIgnoreCase("1")) {
 			return true;
-		} else if (str.equalsIgnoreCase("n") || str.equalsIgnoreCase("no")
-				|| str.equalsIgnoreCase("false") || str.equalsIgnoreCase("f")
-				|| str.equalsIgnoreCase("否") || str.equalsIgnoreCase("0")) {
+		} else if (str.equalsIgnoreCase("n") || str.equalsIgnoreCase("no") || str.equalsIgnoreCase("false")
+				|| str.equalsIgnoreCase("f") || str.equalsIgnoreCase("否") || str.equalsIgnoreCase("0")) {
 			return false;
 		} else if (str.trim().equals("")) {
 			return false;
@@ -344,8 +342,7 @@ public class DataUtils {
 	 * @param isCopyNull
 	 *            是否拷贝Null值
 	 */
-	public static void copySimpleObject(Object source, Object target,
-			boolean isCopyNull) {
+	public static void copySimpleObject(Object source, Object target, boolean isCopyNull) {
 		if (target == null || source == null) {
 			return;
 		}
@@ -378,10 +375,10 @@ public class DataUtils {
 					if (value != null) {
 						method.invoke(target, new Object[] { value });
 					}
-				} 
+				}
 			} catch (Exception e) {
-				if(logger.isDebugEnabled()){
-					logger.debug(e); 
+				if (logger.isDebugEnabled()) {
+					logger.debug(e);
 				}
 			}
 		}
@@ -397,8 +394,7 @@ public class DataUtils {
 	 *            DTO的Class对象
 	 * @return 把每行数据封装到一个DTO对象中，最后返回DTO的List
 	 */
-	public static List generateListFromJdbcResult(List jdbcResultList,
-			Class clazz) {
+	public static List generateListFromJdbcResult(List jdbcResultList, Class clazz) {
 		List<Object> objectList = new ArrayList<Object>();
 		try {
 			List methodList = BeanUtils.getSetter(clazz);
@@ -521,11 +517,13 @@ public class DataUtils {
 
 	/**
 	 * 判断字符串是不是数字
+	 * 
 	 * @param str
 	 * @return
 	 */
 	public static boolean isNumeric(String str) {
-		if (str == null) return false;
+		if (str == null)
+			return false;
 		Pattern pattern = Pattern.compile("[0-9]*");
 		return pattern.matcher(str).matches();
 	}

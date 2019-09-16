@@ -27,19 +27,19 @@ import javax.core.common.utils.StringUtils;
  * @param <T>
  */
 public class EntityOperation<T> {
-	
+
 	private Logger log = Logger.getLogger(EntityOperation.class);
-	
+
 	/**
 	 * 泛型实体Class对象，把实体的字节码保存下来，避免每个方法都重复获取class
 	 */
 	public Class<T> entityClass = null;
-	
+
 	/**
 	 * 初始化时将所有的getter和setter方法保存到这个对象中
 	 */
 	public final Map<String, PropertyMapping> mappings;
-	
+
 	/**
 	 * Spring的规范
 	 */
@@ -51,6 +51,7 @@ public class EntityOperation<T> {
 
 	/**
 	 * 通过反射来完成实体类的装载
+	 * 
 	 * @param clazz
 	 * @param pk
 	 * @throws Exception
@@ -102,9 +103,9 @@ public class EntityOperation<T> {
 		return mappings;
 	}
 
-	//具体的ORM实现过程，列名和值自动匹配
+	// 具体的ORM实现过程，列名和值自动匹配
 	RowMapper<T> createRowMapper() {
-		//返回一个实现了RowMapper接口的 匿名内部类
+		// 返回一个实现了RowMapper接口的 匿名内部类
 		return new RowMapper<T>() {
 			public T mapRow(ResultSet rs, int rowNum) throws SQLException {
 				try {

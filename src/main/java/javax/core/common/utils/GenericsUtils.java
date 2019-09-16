@@ -8,12 +8,10 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * 泛型操作类.
- * 
- * @author 全恒
  */
 @SuppressWarnings("unchecked")
 public class GenericsUtils {
-	
+
 	private static final Log logger = LogFactory.getLog(GenericsUtils.class);
 
 	private GenericsUtils() {

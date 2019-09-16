@@ -21,10 +21,12 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 
 	protected static final Log logger = LogFactory.getLog(BeanUtils.class);
 
-	private BeanUtils() {}
+	private BeanUtils() {
+	}
 
 	/**
-	 * 通过反射,获得定义Class时声明的父类的范型参数的类型. 如public BookManager extends GenricManager<Book>
+	 * 通过反射,获得定义Class时声明的父类的范型参数的类型. 如public BookManager extends GenricManager
+	 * <Book>
 	 * 
 	 * @param clazz
 	 *            The class to introspect
@@ -36,7 +38,8 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 	}
 
 	/**
-	 * 通过反射,获得定义Class时声明的父类的范型参数的类型. 如public BookManager extends GenricManager<Book>
+	 * 通过反射,获得定义Class时声明的父类的范型参数的类型. 如public BookManager extends GenricManager
+	 * <Book>
 	 * 
 	 * @param clazz
 	 *            clazz The class to introspect
@@ -63,15 +66,14 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 		}
 		return (Class) params[index];
 	}
-	
+
 	/**
 	 * 循环向上转型,获取对象的DeclaredField.
 	 * 
 	 * @throws NoSuchFieldException
 	 *             如果没有该Field时抛出.
 	 */
-	public static Field getDeclaredField(Object object, String propertyName)
-			throws NoSuchFieldException {
+	public static Field getDeclaredField(Object object, String propertyName) throws NoSuchFieldException {
 		return getDeclaredField(object.getClass(), propertyName);
 	}
 
@@ -81,18 +83,15 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 	 * @throws NoSuchFieldException
 	 *             如果没有该Field时抛出.
 	 */
-	public static Field getDeclaredField(Class clazz, String propertyName)
-			throws NoSuchFieldException {
-		for (Class superClass = clazz; superClass != Object.class; superClass = superClass
-				.getSuperclass()) {
+	public static Field getDeclaredField(Class clazz, String propertyName) throws NoSuchFieldException {
+		for (Class superClass = clazz; superClass != Object.class; superClass = superClass.getSuperclass()) {
 			try {
 				return superClass.getDeclaredField(propertyName);
 			} catch (NoSuchFieldException e) {
 				// Field不在当前类定义,继续向上转型
 			}
 		}
-		throw new NoSuchFieldException("No such field: " + clazz.getName()
-				+ '.' + propertyName);
+		throw new NoSuchFieldException("No such field: " + clazz.getName() + '.' + propertyName);
 	}
 
 	/**
@@ -101,8 +100,7 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 	 * @throws NoSuchFieldException
 	 *             如果没有该Field时抛出.
 	 */
-	public static Object forceGetProperty(Object object, String propertyName)
-			throws NoSuchFieldException {
+	public static Object forceGetProperty(Object object, String propertyName) throws NoSuchFieldException {
 
 		Field field = getDeclaredField(object, propertyName);
 
@@ -125,8 +123,8 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 	 * @throws NoSuchFieldException
 	 *             如果没有该Field时抛出.
 	 */
-	public static void forceSetProperty(Object object, String propertyName,
-			Object newValue) throws NoSuchFieldException {
+	public static void forceSetProperty(Object object, String propertyName, Object newValue)
+			throws NoSuchFieldException {
 
 		Field field = getDeclaredField(object, propertyName);
 		boolean accessible = field.isAccessible();
@@ -146,8 +144,8 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 	 *             如果没有该Method时抛出.
 	 */
 	@SuppressWarnings("unchecked")
-	public static Object invokePrivateMethod(Object object, String methodName,
-			Object... params) throws NoSuchMethodException {
+	public static Object invokePrivateMethod(Object object, String methodName, Object... params)
+			throws NoSuchMethodException {
 		Class[] types = new Class[params.length];
 		for (int i = 0; i < params.length; i++) {
 			types[i] = params[i].getClass();
@@ -155,8 +153,7 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 
 		Class clazz = object.getClass();
 		Method method = null;
-		for (Class superClass = clazz; superClass != Object.class; superClass = superClass
-				.getSuperclass()) {
+		for (Class superClass = clazz; superClass != Object.class; superClass = superClass.getSuperclass()) {
 			try {
 				method = superClass.getDeclaredMethod(methodName, types);
 				break;
@@ -166,8 +163,7 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 		}
 
 		if (method == null)
-			throw new NoSuchMethodException("No Such Method:"
-					+ clazz.getSimpleName() + methodName);
+			throw new NoSuchMethodException("No Such Method:" + clazz.getSimpleName() + methodName);
 
 		boolean accessible = method.isAccessible();
 		method.setAccessible(true);
@@ -198,8 +194,7 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 	/**
 	 * 按FiledName获得Field的类型.
 	 */
-	public static Class getPropertyType(Class type, String name)
-			throws NoSuchFieldException {
+	public static Class getPropertyType(Class type, String name) throws NoSuchFieldException {
 		return getDeclaredField(type, name).getType();
 	}
 
@@ -229,21 +224,18 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Object invoke(String className, String methodName,
-			Class[] argsClass, Object[] args) throws ClassNotFoundException,
-			SecurityException, NoSuchMethodException, IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException,
-			InstantiationException {
+	public static Object invoke(String className, String methodName, Class[] argsClass, Object[] args)
+			throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException, InstantiationException {
 		Class cl = Class.forName(className);
 		Method method = cl.getMethod(methodName, argsClass);
 		return method.invoke(cl.newInstance(), args);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Object invoke(Object oldObject, String methodName,
-			Class[] argsClass, Object[] args) throws SecurityException,
-			NoSuchMethodException, IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object invoke(Object oldObject, String methodName, Class[] argsClass, Object[] args)
+			throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
 		Class cl = oldObject.getClass();
 		Method method = cl.getMethod(methodName, argsClass);
 		return method.invoke(oldObject, args);
@@ -336,13 +328,15 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 		String name = className.substring(pos);
 		return name;
 	}
-	
+
 	/**
 	 * 把DTO对象转成字符串
-	 * @param obj DTO对象
+	 * 
+	 * @param obj
+	 *            DTO对象
 	 * @return 带属性名和值的字符串
 	 */
-	public static String beanToString(Object obj){
+	public static String beanToString(Object obj) {
 		return ToStringBuilder.reflectionToString(obj);
 	}
 }

@@ -16,12 +16,12 @@ public class ResultMsg<T> implements Serializable {
 	 * 状态码，可根据自己的系统自行定义状态码常量表
 	 */
 	private int status;
-	
+
 	/**
 	 * 返回结果的一个文字说明
 	 */
 	private String msg;
-	
+
 	/**
 	 * 存放实际返回的数据
 	 */

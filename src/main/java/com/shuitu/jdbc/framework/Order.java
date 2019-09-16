@@ -1,14 +1,18 @@
 package com.shuitu.jdbc.framework;
 
-
 /**
  * sql排序组件
+ * 
  * @author 全恒
  */
 public class Order {
-	private boolean ascending; //升序还是降序
-	private String propertyName; //哪个字段升序，哪个字段降序
 	
+	// 升序还是降序
+	private boolean ascending;
+	
+	// 哪个字段升序，哪个字段降序
+	private String propertyName;
+
 	public String toString() {
 		return propertyName + ' ' + (ascending ? "asc" : "desc");
 	}

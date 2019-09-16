@@ -17,12 +17,11 @@ import sun.misc.BASE64Encoder;
 
 /**
  * String工具类
- * 
- * @author Tom
  */
 public class StringUtils {
-	
-	private StringUtils(){}
+
+	private StringUtils() {
+	}
 
 	/**
 	 * 是否为空 是则返回一个空字符
@@ -43,14 +42,12 @@ public class StringUtils {
 	 */
 	public static String format(String str, Object... args) {
 		String result = str;
-		java.util.regex.Pattern p = java.util.regex.Pattern
-				.compile("\\{(\\d+)\\}");
+		java.util.regex.Pattern p = java.util.regex.Pattern.compile("\\{(\\d+)\\}");
 		java.util.regex.Matcher m = p.matcher(str);
 		while (m.find()) {
 			int index = Integer.parseInt(m.group(1));
 			if (index < args.length) {
-				result = result.replace(m.group(),
-						ObjectUtils.notNull(args[index], "").toString());
+				result = result.replace(m.group(), ObjectUtils.notNull(args[index], "").toString());
 			}
 		}
 		return result;
@@ -72,8 +69,7 @@ public class StringUtils {
 
 	public static String coding(String str, String charset, String tocharset) {
 		try {
-			return str == null ? "" : new String(str.getBytes(charset),
-					tocharset);
+			return str == null ? "" : new String(str.getBytes(charset), tocharset);
 		} catch (Exception E) {
 			return str;
 		}
@@ -92,8 +88,7 @@ public class StringUtils {
 		tmp.ensureCapacity(src.length() * 6);
 		for (i = 0; i < src.length(); i++) {
 			j = src.charAt(i);
-			if (Character.isDigit(j) || Character.isLowerCase(j)
-					|| Character.isUpperCase(j))
+			if (Character.isDigit(j) || Character.isLowerCase(j) || Character.isUpperCase(j))
 				tmp.append(j);
 			else if (j < 256) {
 				tmp.append("%");
@@ -161,33 +156,33 @@ public class StringUtils {
 		return sb.toString();
 	}
 
-//	public static final List<Character> HEX_CHAR_LIST;
-//	static {
-//		HEX_CHAR_LIST = new ArrayList<Character>();
-//		HEX_CHAR_LIST.add(new Character('0'));
-//		HEX_CHAR_LIST.add(new Character('1'));
-//		HEX_CHAR_LIST.add(new Character('2'));
-//		HEX_CHAR_LIST.add(new Character('3'));
-//		HEX_CHAR_LIST.add(new Character('4'));
-//		HEX_CHAR_LIST.add(new Character('5'));
-//		HEX_CHAR_LIST.add(new Character('6'));
-//		HEX_CHAR_LIST.add(new Character('7'));
-//		HEX_CHAR_LIST.add(new Character('8'));
-//		HEX_CHAR_LIST.add(new Character('9'));
-//		HEX_CHAR_LIST.add(new Character('a'));
-//		HEX_CHAR_LIST.add(new Character('b'));
-//		HEX_CHAR_LIST.add(new Character('c'));
-//		HEX_CHAR_LIST.add(new Character('d'));
-//		HEX_CHAR_LIST.add(new Character('e'));
-//		HEX_CHAR_LIST.add(new Character('f'));
-//	}
+	// public static final List<Character> HEX_CHAR_LIST;
+	// static {
+	// HEX_CHAR_LIST = new ArrayList<Character>();
+	// HEX_CHAR_LIST.add(new Character('0'));
+	// HEX_CHAR_LIST.add(new Character('1'));
+	// HEX_CHAR_LIST.add(new Character('2'));
+	// HEX_CHAR_LIST.add(new Character('3'));
+	// HEX_CHAR_LIST.add(new Character('4'));
+	// HEX_CHAR_LIST.add(new Character('5'));
+	// HEX_CHAR_LIST.add(new Character('6'));
+	// HEX_CHAR_LIST.add(new Character('7'));
+	// HEX_CHAR_LIST.add(new Character('8'));
+	// HEX_CHAR_LIST.add(new Character('9'));
+	// HEX_CHAR_LIST.add(new Character('a'));
+	// HEX_CHAR_LIST.add(new Character('b'));
+	// HEX_CHAR_LIST.add(new Character('c'));
+	// HEX_CHAR_LIST.add(new Character('d'));
+	// HEX_CHAR_LIST.add(new Character('e'));
+	// HEX_CHAR_LIST.add(new Character('f'));
+	// }
 
-//	private static byte hex2Byte(String s) {
-//		int high = HEX_CHAR_LIST.indexOf(new Character(s.charAt(0))) << 4;
-//		int low = HEX_CHAR_LIST.indexOf(new Character(s.charAt(1)));
-//
-//		return (byte) (high + low);
-//	}
+	// private static byte hex2Byte(String s) {
+	// int high = HEX_CHAR_LIST.indexOf(new Character(s.charAt(0))) << 4;
+	// int low = HEX_CHAR_LIST.indexOf(new Character(s.charAt(1)));
+	//
+	// return (byte) (high + low);
+	// }
 
 	/**
 	 * hex string to bytes
@@ -196,12 +191,12 @@ public class StringUtils {
 	 * @return
 	 */
 	public static byte[] hex2Bytes(String input) {
-		byte[] res = new byte[input.length() / 2];        
-		char[] chs = input.toCharArray();  
-		for(int i = 0,c = 0; i < chs.length; i += 2,c ++){  
-			res[c] = (byte) (Integer.parseInt(new String(chs,i,2), 16));  
+		byte[] res = new byte[input.length() / 2];
+		char[] chs = input.toCharArray();
+		for (int i = 0, c = 0; i < chs.length; i += 2, c++) {
+			res[c] = (byte) (Integer.parseInt(new String(chs, i, 2), 16));
 		}
-		return res;  
+		return res;
 	}
 
 	public static String getPrefix(String content, String regex) {
@@ -358,8 +353,7 @@ public class StringUtils {
 		String[] returnArray = null;
 		int length = 0;
 
-		if ((originalString == null) || (delimiterString == null)
-				|| (originalString.equals(""))) {
+		if ((originalString == null) || (delimiterString == null) || (originalString.equals(""))) {
 			return new String[0];
 		}
 
@@ -382,8 +376,7 @@ public class StringUtils {
 		for (int i = 0; i < length - 1; ++i) {
 			index = originalString.indexOf(delimiterString);
 			returnArray[i] = originalString.substring(0, index);
-			originalString = originalString.substring(index
-					+ delimiterString.length());
+			originalString = originalString.substring(index + delimiterString.length());
 		}
 
 		returnArray[(length - 1)] = originalString;
@@ -398,7 +391,7 @@ public class StringUtils {
 	 * @return
 	 */
 	public static Map<String, String> toMap(String str, String splitString) {
-		return strToMap(str,splitString,"=");
+		return strToMap(str, splitString, "=");
 	}
 
 	/**
@@ -410,19 +403,22 @@ public class StringUtils {
 	 */
 	public static Map<String, String> jsonToMap(String jsonStr, String splitStr) {
 		jsonStr = jsonStr.startsWith("{") ? jsonStr.substring(1) : jsonStr;
-		jsonStr = jsonStr.endsWith("}") ? jsonStr.substring(0,
-				jsonStr.length() - 1) : jsonStr;
-		return strToMap(jsonStr,splitStr,":");
+		jsonStr = jsonStr.endsWith("}") ? jsonStr.substring(0, jsonStr.length() - 1) : jsonStr;
+		return strToMap(jsonStr, splitStr, ":");
 	}
-	
+
 	/**
 	 * 将字符串拆分成Map "str1=1,str2=abc,..."
-	 * @param str 待拆分字符串
-	 * @param splitStr	拆分字符 ","
-	 * @param linkStr 连接字符 "="
+	 * 
+	 * @param str
+	 *            待拆分字符串
+	 * @param splitStr
+	 *            拆分字符 ","
+	 * @param linkStr
+	 *            连接字符 "="
 	 * @return
 	 */
-	public static Map<String, String> strToMap(String str,String splitStr,String linkStr){
+	public static Map<String, String> strToMap(String str, String splitStr, String linkStr) {
 		Map<String, String> map = Collections.synchronizedSortedMap(new TreeMap<String, String>());
 		String[] values = split(str, splitStr);
 		for (int i = 0; i < values.length; ++i) {
@@ -439,7 +435,7 @@ public class StringUtils {
 		}
 		return map;
 	}
-	
+
 	public static String iso2gbk(String s) {
 		if (s == null)
 			return "";
@@ -554,13 +550,11 @@ public class StringUtils {
 			pos = src.indexOf("%", lastPos);
 			if (pos == lastPos) {
 				if (src.charAt(pos + 1) == 'u') {
-					ch = (char) Integer.parseInt(
-							src.substring(pos + 2, pos + 6), 16);
+					ch = (char) Integer.parseInt(src.substring(pos + 2, pos + 6), 16);
 					tmp.append(ch);
 					lastPos = pos + 6;
 				} else {
-					ch = (char) Integer.parseInt(
-							src.substring(pos + 1, pos + 3), 16);
+					ch = (char) Integer.parseInt(src.substring(pos + 1, pos + 3), 16);
 					tmp.append(ch);
 					lastPos = pos + 3;
 				}
@@ -606,8 +600,7 @@ public class StringUtils {
 	 * @return
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String getPartString(String str, int len, String showStr)
-			throws UnsupportedEncodingException {
+	public static String getPartString(String str, int len, String showStr) throws UnsupportedEncodingException {
 		byte b[];
 		int counterOfDoubleByte = 0;
 		b = str.getBytes("UTF-8");
@@ -649,23 +642,19 @@ public class StringUtils {
 	 *            规定每行显示多少个字符,这个变量用于控制显示效果
 	 * @return
 	 */
-	public static String pagination(String text, int pageIndex, int pageSize,
-			int lineLength) {
+	public static String pagination(String text, int pageIndex, int pageSize, int lineLength) {
 		if (isEmpty(text))
 			return text;
 		StringBuffer sb = new StringBuffer();
 		// 计算总页数
-		Integer totalPage = ((text.length() % pageSize == 0) ? text.length()
-				/ pageSize : (text.length() / pageSize + 1));
+		Integer totalPage = ((text.length() % pageSize == 0) ? text.length() / pageSize
+				: (text.length() / pageSize + 1));
 		if (pageIndex > totalPage) {
 			return sb.append("页码无效").toString();
 		}
-		String result = text.toString()
-				.substring(
-						(pageIndex - 1) * pageSize,
-						(((pageIndex - 1) * pageSize + pageSize) >= text
-								.length() - 1) ? text.length()
-								: ((pageIndex - 1) * pageSize + pageSize));
+		String result = text.toString().substring((pageIndex - 1) * pageSize,
+				(((pageIndex - 1) * pageSize + pageSize) >= text.length() - 1) ? text.length()
+						: ((pageIndex - 1) * pageSize + pageSize));
 
 		char[] chars = result.toCharArray();
 		int length = lineLength;
@@ -721,8 +710,7 @@ public class StringUtils {
 	 *            是否字母大小写匹配，true：区分；false：不区分
 	 * @return 返回从fromIndex索引位置开始的查询子字符串在目标字符串中的索引值，如果没有匹配项则返回-1.
 	 */
-	public static int indexOf(String str, String subStr, int fromIndex,
-			boolean caseSensitive) {
+	public static int indexOf(String str, String subStr, int fromIndex, boolean caseSensitive) {
 		if (caseSensitive == false) {
 			return str.toLowerCase().indexOf(subStr.toLowerCase(), fromIndex);
 		}
@@ -753,8 +741,7 @@ public class StringUtils {
 	 *            是否字母大小写匹配，true：区分；false：不区分
 	 * @return 返回替换后的字符串
 	 */
-	public static String replace(String str, String searchStr,
-			String replaceStr, boolean caseSensitive) {
+	public static String replace(String str, String searchStr, String replaceStr, boolean caseSensitive) {
 		String result = "";
 		int i = 0;
 		int j = 0;
@@ -855,8 +842,7 @@ public class StringUtils {
 		if (replaceStr == null) {
 			replaceStr = "";
 		}
-		result = str.substring(0, beginIndex) + replaceStr
-				+ str.substring(beginIndex + replaceStr.length());
+		result = str.substring(0, beginIndex) + replaceStr + str.substring(beginIndex + replaceStr.length());
 		return result;
 	}
 
@@ -881,8 +867,7 @@ public class StringUtils {
 	 * @param map
 	 * @return Map
 	 */
-	public static Map<String, String> sortEnglishNumberWord(
-			Map<String, String> map) {
+	public static Map<String, String> sortEnglishNumberWord(Map<String, String> map) {
 		Map<String, String> resultMap = new LinkedHashMap<String, String>(0);
 		Map<Integer, String> tempMap = new LinkedHashMap<Integer, String>(0);
 
@@ -991,10 +976,8 @@ public class StringUtils {
 		java.util.regex.Pattern p_html;
 		java.util.regex.Matcher m_html;
 		try {
-			p_html = Pattern
-					.compile(
-							"<[\\s]*?style[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?style[\\s]*?>",
-							Pattern.CASE_INSENSITIVE);
+			p_html = Pattern.compile("<[\\s]*?style[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?style[\\s]*?>",
+					Pattern.CASE_INSENSITIVE);
 			m_html = p_html.matcher(content);
 			content = m_html.replaceAll("");
 		} catch (Exception e) {
@@ -1015,10 +998,8 @@ public class StringUtils {
 		java.util.regex.Pattern p_html;
 		java.util.regex.Matcher m_html;
 		try {
-			p_html = Pattern
-					.compile(
-							"<[\\s]*?script[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?script[\\s]*?>",
-							Pattern.CASE_INSENSITIVE);
+			p_html = Pattern.compile("<[\\s]*?script[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?script[\\s]*?>",
+					Pattern.CASE_INSENSITIVE);
 			m_html = p_html.matcher(content);
 			content = m_html.replaceAll("");
 		} catch (Exception e) {
@@ -1036,8 +1017,7 @@ public class StringUtils {
 	public static String removeSpace(String content) {
 		if (null == content)
 			return "";
-		return content.replaceAll("\\s*(\\r\\n)\\s*", "")
-				.replaceAll(">(\\s+)", ">").replaceAll("(\\s+)<", "<");
+		return content.replaceAll("\\s*(\\r\\n)\\s*", "").replaceAll(">(\\s+)", ">").replaceAll("(\\s+)<", "<");
 	}
 
 	/**
@@ -1130,40 +1110,42 @@ public class StringUtils {
 
 	/**
 	 * 使用Base64编码方式给字符串编码
+	 * 
 	 * @param str
 	 * @return
 	 */
-	public static String encodeBase64(String str) {  
-        byte[] b = null;  
-        String s = null;  
-        try {  
-            b = str.getBytes("utf-8");  
-        } catch (UnsupportedEncodingException e) {  
-            e.printStackTrace();  
-        }  
-        if (b != null) {  
-            s = new BASE64Encoder().encode(b);  
-        }  
-        return s;  
-    }  
-	
+	public static String encodeBase64(String str) {
+		byte[] b = null;
+		String s = null;
+		try {
+			b = str.getBytes("utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		if (b != null) {
+			s = new BASE64Encoder().encode(b);
+		}
+		return s;
+	}
+
 	/**
 	 * 使用Base64方式给字符串解码
+	 * 
 	 * @param s
 	 * @return
 	 */
-	public static String decoderBase64(String s) {  
-        byte[] b = null;  
-        String result = null;  
-        if (s != null) {  
-            BASE64Decoder decoder = new BASE64Decoder();  
-            try {  
-                b = decoder.decodeBuffer(s);  
-                result = new String(b, "utf-8");  
-            } catch (Exception e) {  
-                e.printStackTrace();  
-            }  
-        }  
-        return result;  
-    }  
+	public static String decoderBase64(String s) {
+		byte[] b = null;
+		String result = null;
+		if (s != null) {
+			BASE64Decoder decoder = new BASE64Decoder();
+			try {
+				b = decoder.decodeBuffer(s);
+				result = new String(b, "utf-8");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
 }

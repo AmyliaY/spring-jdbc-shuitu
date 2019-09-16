@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * 分页对象，包含当前页数据及分页信息，如：总记录数
+ * 
+ * @author 全恒
  */
 public class Page<T> implements Serializable {
 

@@ -13,60 +13,73 @@ import com.shuitu.jdbc.framework.QueryRule.Rule;
 
 import javax.core.common.utils.StringUtils;
 
-
 /**
  * 根据QueryRule自动构建sql语句
+ * 
  * @author 全恒
  *
  */
 public class QueryRuleSqlBulider {
-	private int CURR_INDEX = 0; //记录参数所在的位置
-	private List<String> properties; //保存列名列表
-	private List<Object> values; //保存参数值列表
-	private List<Order> orders; //保存排序规则列表
-	
-	private String whereSql = ""; 
+
+	// 记录参数所在的位置
+	private int CURR_INDEX = 0;
+
+	// 保存列名列表
+	private List<String> properties;
+
+	// 保存参数值列表
+	private List<Object> values;
+
+	// 保存排序规则列表
+	private List<Order> orders;
+
+	private String whereSql = "";
 	private String orderSql = "";
-	private Object [] valueArr = new Object[]{};
-	private Map<Object,Object> valueMap = new HashMap<Object,Object>();
-	
+	private Object[] valueArr = new Object[] {};
+	private Map<Object, Object> valueMap = new HashMap<Object, Object>();
+
 	/**
 	 * 或得查询条件
+	 * 
 	 * @return
 	 */
-	public String getWhereSql(){
+	public String getWhereSql() {
 		return this.whereSql;
 	}
-	
+
 	/**
 	 * 获得排序条件
+	 * 
 	 * @return
 	 */
-	public String getOrderSql(){
+	public String getOrderSql() {
 		return this.orderSql;
 	}
-	
+
 	/**
 	 * 获得参数值列表
+	 * 
 	 * @return
 	 */
-	public Object [] getValues(){
+	public Object[] getValues() {
 		return this.valueArr;
 	}
-	
+
 	/**
 	 * 获取参数列表
+	 * 
 	 * @return
 	 */
-	public Map<Object,Object> getValueMap(){
+	public Map<Object, Object> getValueMap() {
 		return this.valueMap;
 	}
-	
+
 	/**
 	 * 创建SQL构造器
+	 * 
 	 * @param queryRule
 	 */
-	public  QueryRuleSqlBulider(QueryRule queryRule) {
+	public QueryRuleSqlBulider(QueryRule queryRule) {
 		CURR_INDEX = 0;
 		properties = new ArrayList<String>();
 		values = new ArrayList<Object>();
@@ -125,14 +138,14 @@ public class QueryRuleSqlBulider {
 				throw new IllegalArgumentException("type " + rule.getType() + " not supported.");
 			}
 		}
-		//拼装where语句
+		// 拼装where语句
 		appendWhereSql();
-		//拼装排序语句
+		// 拼装排序语句
 		appendOrderSql();
-		//拼装参数值
+		// 拼装参数值
 		appendValues();
 	}
-	
+
 	/**
 	 * 去掉order
 	 * 
@@ -149,7 +162,7 @@ public class QueryRuleSqlBulider {
 		m.appendTail(sb);
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 去掉select
 	 * 
@@ -157,19 +170,20 @@ public class QueryRuleSqlBulider {
 	 * @return
 	 */
 	protected String removeSelect(String sql) {
-		if(sql.toLowerCase().matches("from\\s+")){
+		if (sql.toLowerCase().matches("from\\s+")) {
 			int beginPos = sql.toLowerCase().indexOf("from");
 			return sql.substring(beginPos);
-		}else{
+		} else {
 			return sql;
 		}
 	}
-	
+
 	/**
 	 * 处理like
+	 * 
 	 * @param rule
 	 */
-	private  void processLike(QueryRule.Rule rule) {
+	private void processLike(QueryRule.Rule rule) {
 		if (ArrayUtils.isEmpty(rule.getValues())) {
 			return;
 		}
@@ -182,189 +196,199 @@ public class QueryRuleSqlBulider {
 				obj = value;
 			}
 		}
-		add(rule.getAndOr(),rule.getPropertyName(),"like","%"+rule.getValues()[0]+"%");
+		add(rule.getAndOr(), rule.getPropertyName(), "like", "%" + rule.getValues()[0] + "%");
 	}
 
 	/**
 	 * 处理between
+	 * 
 	 * @param rule
 	 */
-	private  void processBetween(QueryRule.Rule rule) {
-		if ((ArrayUtils.isEmpty(rule.getValues()))
-				|| (rule.getValues().length < 2)) {
+	private void processBetween(QueryRule.Rule rule) {
+		if ((ArrayUtils.isEmpty(rule.getValues())) || (rule.getValues().length < 2)) {
 			return;
 		}
-		add(rule.getAndOr(),rule.getPropertyName(),"","between",rule.getValues()[0],"and");
-		add(0,"","","",rule.getValues()[1],"");
+		add(rule.getAndOr(), rule.getPropertyName(), "", "between", rule.getValues()[0], "and");
+		add(0, "", "", "", rule.getValues()[1], "");
 	}
-	
+
 	/**
 	 * 处理 =
+	 * 
 	 * @param rule
 	 */
-	private  void processEqual(QueryRule.Rule rule) {
+	private void processEqual(QueryRule.Rule rule) {
 		if (ArrayUtils.isEmpty(rule.getValues())) {
 			return;
 		}
-		add(rule.getAndOr(),rule.getPropertyName(),"=",rule.getValues()[0]);
+		add(rule.getAndOr(), rule.getPropertyName(), "=", rule.getValues()[0]);
 	}
 
 	/**
 	 * 处理 <>
+	 * 
 	 * @param rule
 	 */
-	private  void processNotEqual(QueryRule.Rule rule) {
+	private void processNotEqual(QueryRule.Rule rule) {
 		if (ArrayUtils.isEmpty(rule.getValues())) {
 			return;
 		}
-		add(rule.getAndOr(),rule.getPropertyName(),"<>",rule.getValues()[0]);
+		add(rule.getAndOr(), rule.getPropertyName(), "<>", rule.getValues()[0]);
 	}
 
 	/**
 	 * 处理 >
+	 * 
 	 * @param rule
 	 */
-	private  void processGreaterThen(
-			QueryRule.Rule rule) {
+	private void processGreaterThen(QueryRule.Rule rule) {
 		if (ArrayUtils.isEmpty(rule.getValues())) {
 			return;
 		}
-		add(rule.getAndOr(),rule.getPropertyName(),">",rule.getValues()[0]);
+		add(rule.getAndOr(), rule.getPropertyName(), ">", rule.getValues()[0]);
 	}
 
 	/**
 	 * 处理>=
+	 * 
 	 * @param rule
 	 */
-	private  void processGreaterEqual(
-			QueryRule.Rule rule) {
+	private void processGreaterEqual(QueryRule.Rule rule) {
 		if (ArrayUtils.isEmpty(rule.getValues())) {
 			return;
 		}
-		add(rule.getAndOr(),rule.getPropertyName(),">=",rule.getValues()[0]);
+		add(rule.getAndOr(), rule.getPropertyName(), ">=", rule.getValues()[0]);
 	}
 
 	/**
 	 * 处理<
+	 * 
 	 * @param rule
 	 */
-	private  void processLessThen(QueryRule.Rule rule) {
+	private void processLessThen(QueryRule.Rule rule) {
 		if (ArrayUtils.isEmpty(rule.getValues())) {
 			return;
 		}
-		add(rule.getAndOr(),rule.getPropertyName(),"<",rule.getValues()[0]);
+		add(rule.getAndOr(), rule.getPropertyName(), "<", rule.getValues()[0]);
 	}
 
 	/**
 	 * 处理<=
+	 * 
 	 * @param rule
 	 */
-	private  void processLessEqual(
-			QueryRule.Rule rule) {
+	private void processLessEqual(QueryRule.Rule rule) {
 		if (ArrayUtils.isEmpty(rule.getValues())) {
 			return;
 		}
-		add(rule.getAndOr(),rule.getPropertyName(),"<=",rule.getValues()[0]);
+		add(rule.getAndOr(), rule.getPropertyName(), "<=", rule.getValues()[0]);
 	}
 
 	/**
-	 * 处理  is null
+	 * 处理 is null
+	 * 
 	 * @param rule
 	 */
-	private  void processIsNull(QueryRule.Rule rule) {
-		add(rule.getAndOr(),rule.getPropertyName(),"is null",null);
+	private void processIsNull(QueryRule.Rule rule) {
+		add(rule.getAndOr(), rule.getPropertyName(), "is null", null);
 	}
 
 	/**
 	 * 处理 is not null
+	 * 
 	 * @param rule
 	 */
-	private  void processIsNotNull(QueryRule.Rule rule) {
-		add(rule.getAndOr(),rule.getPropertyName(),"is not null",null);
+	private void processIsNotNull(QueryRule.Rule rule) {
+		add(rule.getAndOr(), rule.getPropertyName(), "is not null", null);
 	}
 
 	/**
-	 * 处理  <>''
+	 * 处理 <>''
+	 * 
 	 * @param rule
 	 */
-	private  void processIsNotEmpty(QueryRule.Rule rule) {
-		add(rule.getAndOr(),rule.getPropertyName(),"<>","''");
+	private void processIsNotEmpty(QueryRule.Rule rule) {
+		add(rule.getAndOr(), rule.getPropertyName(), "<>", "''");
 	}
 
 	/**
 	 * 处理 =''
+	 * 
 	 * @param rule
 	 */
-	private  void processIsEmpty(QueryRule.Rule rule) {
-		add(rule.getAndOr(),rule.getPropertyName(),"=","''");
+	private void processIsEmpty(QueryRule.Rule rule) {
+		add(rule.getAndOr(), rule.getPropertyName(), "=", "''");
 	}
 
-	
 	/**
 	 * 处理in和not in
+	 * 
 	 * @param rule
 	 * @param name
 	 */
-	private void inAndNotIn(QueryRule.Rule rule,String name){
+	private void inAndNotIn(QueryRule.Rule rule, String name) {
 		if (ArrayUtils.isEmpty(rule.getValues())) {
 			return;
 		}
-		if ((rule.getValues().length == 1) && (rule.getValues()[0] != null)
-				&& (rule.getValues()[0] instanceof List)) {
+		if ((rule.getValues().length == 1) && (rule.getValues()[0] != null) && (rule.getValues()[0] instanceof List)) {
 			List<Object> list = (List) rule.getValues()[0];
-			
-			if ((list != null) && (list.size() > 0)){
+
+			if ((list != null) && (list.size() > 0)) {
 				for (int i = 0; i < list.size(); i++) {
-					if(i == 0 && i == list.size() - 1){
-						add(rule.getAndOr(),rule.getPropertyName(),"",name + " (",list.get(i),")");
-					}else if(i == 0 && i < list.size() - 1){
-						add(rule.getAndOr(),rule.getPropertyName(),"",name + " (",list.get(i),"");
+					if (i == 0 && i == list.size() - 1) {
+						add(rule.getAndOr(), rule.getPropertyName(), "", name + " (", list.get(i), ")");
+					} else if (i == 0 && i < list.size() - 1) {
+						add(rule.getAndOr(), rule.getPropertyName(), "", name + " (", list.get(i), "");
 					}
-					if(i > 0 && i < list.size() - 1){
-						add(0,"",",","",list.get(i),"");
+					if (i > 0 && i < list.size() - 1) {
+						add(0, "", ",", "", list.get(i), "");
 					}
-					if(i == list.size() - 1 && i != 0){
-						add(0,"",",","",list.get(i),")");
+					if (i == list.size() - 1 && i != 0) {
+						add(0, "", ",", "", list.get(i), ")");
 					}
 				}
 			}
 		} else {
-			Object[] list =  rule.getValues();
+			Object[] list = rule.getValues();
 			for (int i = 0; i < list.length; i++) {
-				if(i == 0 && i == list.length - 1){
-					add(rule.getAndOr(),rule.getPropertyName(),"",name + " (",list[i],")");
-				}else if(i == 0 && i < list.length - 1){
-					add(rule.getAndOr(),rule.getPropertyName(),"",name + " (",list[i],"");
+				if (i == 0 && i == list.length - 1) {
+					add(rule.getAndOr(), rule.getPropertyName(), "", name + " (", list[i], ")");
+				} else if (i == 0 && i < list.length - 1) {
+					add(rule.getAndOr(), rule.getPropertyName(), "", name + " (", list[i], "");
 				}
-				if(i > 0 && i < list.length - 1){
-					add(0,"",",","",list[i],"");
+				if (i > 0 && i < list.length - 1) {
+					add(0, "", ",", "", list[i], "");
 				}
-				if(i == list.length - 1 && i != 0){
-					add(0,"",",","",list[i],")");
+				if (i == list.length - 1 && i != 0) {
+					add(0, "", ",", "", list[i], ")");
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * 处理 not in
+	 * 
 	 * @param rule
 	 */
-	private void processNotIN(QueryRule.Rule rule){
-		inAndNotIn(rule,"not in");
+	private void processNotIN(QueryRule.Rule rule) {
+		inAndNotIn(rule, "not in");
 	}
-	
+
 	/**
 	 * 处理 in
+	 * 
 	 * @param rule
 	 */
-	private  void processIN(QueryRule.Rule rule) {
-		inAndNotIn(rule,"in");
+	private void processIN(QueryRule.Rule rule) {
+		inAndNotIn(rule, "in");
 	}
-	
+
 	/**
 	 * 处理 order by
-	 * @param rule 查询规则
+	 * 
+	 * @param rule
+	 *            查询规则
 	 */
 	private void processOrder(Rule rule) {
 		switch (rule.getType()) {
@@ -384,73 +408,83 @@ public class QueryRuleSqlBulider {
 			break;
 		}
 	}
-	
-	
+
 	/**
 	 * 加入到sql查询规则队列
-	 * @param andOr and 或者 or
-	 * @param key 列名
-	 * @param split 列名与值之间的间隔
-	 * @param value 值
+	 * 
+	 * @param andOr
+	 *            and 或者 or
+	 * @param key
+	 *            列名
+	 * @param split
+	 *            列名与值之间的间隔
+	 * @param value
+	 *            值
 	 */
-	private  void add(int andOr,String key,String split ,Object value){
-		add(andOr,key,split,"",value,"");
+	private void add(int andOr, String key, String split, Object value) {
+		add(andOr, key, split, "", value, "");
 	}
-	
+
 	/**
 	 * 加入到sql查询规则队列
-	 * @param andOr and 或则 or
-	 * @param key 列名
-	 * @param split 列名与值之间的间隔
-	 * @param prefix 值前缀
-	 * @param value 值
-	 * @param suffix 值后缀
+	 * 
+	 * @param andOr
+	 *            and 或则 or
+	 * @param key
+	 *            列名
+	 * @param split
+	 *            列名与值之间的间隔
+	 * @param prefix
+	 *            值前缀
+	 * @param value
+	 *            值
+	 * @param suffix
+	 *            值后缀
 	 */
-	private  void add(int andOr,String key,String split ,String prefix,Object value,String  suffix){
-		String andOrStr = (0 == andOr ? "" :(QueryRule.AND == andOr ? " and " : " or "));  
+	private void add(int andOr, String key, String split, String prefix, Object value, String suffix) {
+		String andOrStr = (0 == andOr ? "" : (QueryRule.AND == andOr ? " and " : " or "));
 		properties.add(CURR_INDEX, andOrStr + key + " " + split + prefix + (null != value ? " ? " : " ") + suffix);
-		if(null != value){
-			values.add(CURR_INDEX,value);
-			CURR_INDEX ++;
+		if (null != value) {
+			values.add(CURR_INDEX, value);
+			CURR_INDEX++;
 		}
 	}
-	
-	
+
 	/**
 	 * 拼装 where 语句
 	 */
-	private void appendWhereSql(){
+	private void appendWhereSql() {
 		StringBuffer whereSql = new StringBuffer();
 		for (String p : properties) {
 			whereSql.append(p);
 		}
 		this.whereSql = removeSelect(removeOrders(whereSql.toString()));
 	}
-	
+
 	/**
 	 * 拼装排序语句
 	 */
-	private void appendOrderSql(){
+	private void appendOrderSql() {
 		StringBuffer orderSql = new StringBuffer();
-		for (int i = 0 ; i < orders.size(); i ++) {
-			if(i > 0 && i < orders.size()){
+		for (int i = 0; i < orders.size(); i++) {
+			if (i > 0 && i < orders.size()) {
 				orderSql.append(",");
 			}
 			orderSql.append(orders.get(i).toString());
 		}
 		this.orderSql = removeSelect(removeOrders(orderSql.toString()));
 	}
-	
+
 	/**
 	 * 拼装参数值
 	 */
-	private void appendValues(){
-		Object [] val = new Object[values.size()];
-		for (int i = 0; i < values.size(); i ++) {
+	private void appendValues() {
+		Object[] val = new Object[values.size()];
+		for (int i = 0; i < values.size(); i++) {
 			val[i] = values.get(i);
 			valueMap.put(i, values.get(i));
 		}
 		this.valueArr = val;
 	}
-	
+
 }
