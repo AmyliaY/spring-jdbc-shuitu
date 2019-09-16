@@ -38,16 +38,16 @@ public final class QueryRule implements Serializable {
 	public static final int ISNOTEMPTY = 14;
 	
 	/**
-	 * 逻辑
+	 * 与或逻辑
 	 */
 	public static final int AND = 201;
 	public static final int OR = 202;
 	
-	/**
-	 * 保存所有发查询规则
-	 */
+	/** 保存所有的查询规则 */
 	private List<Rule> ruleList = new ArrayList<Rule>();
+	
 	private List<QueryRule> queryRuleList = new ArrayList<QueryRule>();
+	
 	private String propertyName;
 
 	private QueryRule() {
