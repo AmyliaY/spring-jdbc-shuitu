@@ -10,13 +10,13 @@
 						http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 	<aop:aspectj-autoproxy proxy-target-class="true"/>
 	
-	<bean id="xmlAspect" class="com.gupaoedu.aop.aspect.XmlAspect"></bean>
+	<bean id="xmlAspect" class="com.shuitu.aop.aspect.XmlAspect"></bean>
 	<!-- AOP配置 -->
 	<aop:config>
 		<!-- 声明一个切面,并注入切面Bean,相当于@Aspect -->
 		<aop:aspect ref="xmlAspect">
 			<!-- 配置一个切入点,相当于@Pointcut -->
-			<aop:pointcut expression="execution(* com.gupaoedu.aop.service..*(..))" id="simplePointcut"/>
+			<aop:pointcut expression="execution(* com.shuitu.aop.service..*(..))" id="simplePointcut"/>
 			<!-- 配置通知,相当于@Before、@After、@AfterReturn、@Around、@AfterThrowing -->
 			<aop:before pointcut-ref="simplePointcut" method="before"/>
 			<aop:after pointcut-ref="simplePointcut" method="after"/>

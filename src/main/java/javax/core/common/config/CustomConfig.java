@@ -17,6 +17,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
  */
 public class CustomConfig extends PropertyPlaceholderConfigurer {
 
+	/** 占位符标志 */
 	private final String PLACEHOLDER_START = "${";
 
 	private static Map<String, String> ctx;
