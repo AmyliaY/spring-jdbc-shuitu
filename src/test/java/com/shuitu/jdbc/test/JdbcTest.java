@@ -1,4 +1,4 @@
-package com.gupaoedu.vip.jdbc.test;
+package com.shuitu.jdbc.test;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
