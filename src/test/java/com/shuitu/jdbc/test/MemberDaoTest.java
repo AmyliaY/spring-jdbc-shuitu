@@ -10,15 +10,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alibaba.fastjson.JSON;
-import com.shuitu.demo.entity.Member;
-import com.shuitu.jdbc.demo.dao.MemberDao;
+import com.shuitu.demo.entity.Coder;
+import com.shuitu.jdbc.demo.dao.CoderDao;
 
 @ContextConfiguration(locations = {"classpath*:application-context.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class MemberDaoTest {
 	
-	@Autowired 
-	MemberDao memberDao;
+	@Autowired
+	CoderDao coderDao;
 	
 	//本框架做了两件事：
 	//1、自动生成SQL语句
@@ -57,21 +57,22 @@ public class MemberDaoTest {
 	//5、ORM支持的类型原则上只认Java八大基本数据类型  + String（为了降低复杂度）
 	
 	@Test
-//	@Ignore
-	public void testSelectByName(){
+	public void testSelectCoderByName(){
 		try {
-			List<Member> r = memberDao.selectByName("tom");
-			System.out.println(JSON.toJSON(r));
+			List<Coder> coders = coderDao.selectByName("shuitu");
+			System.out.println(JSON.toJSON(coders));
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 	
 	@Test
 	@Ignore
 	public void testSelectAll(){
 		try {
-			System.out.println("-------" + JSON.toJSONString(memberDao.selectAll()));
+			System.out.println("-------" + JSON.toJSONString(coderDao.selectAll()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -81,9 +82,9 @@ public class MemberDaoTest {
 	@Ignore
 	public void testInsertOne(){
 		try {
-			Member data = new Member();
-			data.setName("小星星");
-			boolean r = memberDao.insterOne(data);
+			Coder data = new Coder();
+			data.setName("d1c0");
+			boolean r = coderDao.insterOne(data);
 			if(r){
 				System.out.println(data.getId());
 			}else{
@@ -98,10 +99,10 @@ public class MemberDaoTest {
 	@Ignore
 	public void testUpdate(){
 		try {
-			Member data = new Member();
-			data.setId(6L);
+			Coder data = new Coder();
+			data.setId("BC000000001");
 			data.setName("于菲");
-			boolean r = memberDao.updataOne(data);
+			boolean r = coderDao.updataOne(data);
 			System.out.println(r);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -113,9 +114,9 @@ public class MemberDaoTest {
 	@Ignore
 	public void testDelete(){
 		try {
-			Member data = new Member();
-			data.setId(6L);
-			boolean r = memberDao.deleteOne(data);
+			Coder data = new Coder();
+			data.setId("BC000000001");
+			boolean r = coderDao.deleteOne(data);
 			System.out.println(r);
 		} catch (Exception e) {
 			e.printStackTrace();

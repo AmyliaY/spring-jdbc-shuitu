@@ -69,6 +69,7 @@ public abstract class BaseDaoSupport<T extends Serializable, PK extends Serializ
 	@SuppressWarnings("unchecked")
 	protected BaseDaoSupport() {
 		try {
+			// 通过反射,获得定义Class时声明的父类的范型参数的类型
 			Class<T> entityClass = GenericsUtils.getSuperClassGenricType(getClass(), 0);
 			op = new EntityOperation<T>(entityClass, this.getPKColumn());
 			this.setTableName(op.tableName);

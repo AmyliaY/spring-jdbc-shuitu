@@ -30,23 +30,21 @@ public class EntityOperation<T> {
 
 	private Logger log = Logger.getLogger(EntityOperation.class);
 
-	/**
-	 * 泛型实体Class对象，把实体的字节码保存下来，避免每个方法都重复获取class
-	 */
+	/** 泛型实体Class对象，把实体的字节码保存下来，避免每个方法都重复获取class */
 	public Class<T> entityClass = null;
 
-	/**
-	 * 初始化时将所有的getter和setter方法保存到这个对象中
-	 */
+	/** 初始化时将所有的getter和setter方法保存到这个对象中 */
 	public final Map<String, PropertyMapping> mappings;
 
-	/**
-	 * Spring的规范
-	 */
+	/** Spring的规范 */
 	public final RowMapper<T> rowMapper;
 
 	public final String tableName;
+	
+	/** 保存实体类所有的列名 */
 	public String allColumn = "*";
+	
+	/** 保存实体类主键 */
 	public Field pkField;
 
 	/**
@@ -256,9 +254,7 @@ class PropertyMapping {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			/**
-			 * 出错原因如果是boolean字段 mysql字段类型 设置tinyint(1)
-			 */
+			//出错原因如果是boolean字段 mysql字段类型 设置tinyint(1)
 			System.err.println(fieldName + "--" + value);
 		}
 

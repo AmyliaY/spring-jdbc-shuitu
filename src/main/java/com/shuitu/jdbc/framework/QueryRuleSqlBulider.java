@@ -451,7 +451,11 @@ public class QueryRuleSqlBulider {
 	}
 
 	/**
-	 * 拼装 where 语句
+	 * 拼装 where 语句，只要有一个Rule，就往properties中加入一个条件，如：
+	 * and name = ?
+	 * or age = ?
+	 * and name like ?
+	 * and age in (?, ?, ?)
 	 */
 	private void appendWhereSql() {
 		StringBuffer whereSql = new StringBuffer();

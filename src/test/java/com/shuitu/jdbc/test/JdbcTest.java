@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
-import com.mysql.jdbc.Driver;
-import com.shuitu.demo.entity.Member;
+import com.shuitu.demo.entity.Coder;
 
 public class JdbcTest {
 
@@ -60,7 +59,7 @@ public class JdbcTest {
 			List<Object> result = new ArrayList<Object>();
 			while (rs.next()) {
 
-				Class clazz = Member.class;
+				Class clazz = Coder.class;
 				Object obj = clazz.newInstance();
 				for (int i = 1; i <= len; i++) {
 					String columnName = rs.getMetaData().getColumnName(i);
