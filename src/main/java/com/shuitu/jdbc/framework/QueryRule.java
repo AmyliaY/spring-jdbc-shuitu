@@ -13,15 +13,11 @@ public final class QueryRule implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * 排序规则
-	 */
+	/** 排序规则 */
 	public static final int ASC_ORDER = 101;
 	public static final int DESC_ORDER = 102;
 	
-	/**
-	 * 条件
-	 */
+	/** 条件 */
 	public static final int LIKE = 1;
 	public static final int IN = 2;
 	public static final int NOTIN = 3;
@@ -37,9 +33,7 @@ public final class QueryRule implements Serializable {
 	public static final int ISEMPTY = 13;
 	public static final int ISNOTEMPTY = 14;
 	
-	/**
-	 * 与或逻辑
-	 */
+	/** 与或逻辑 */
 	public static final int AND = 201;
 	public static final int OR = 202;
 	
@@ -248,7 +242,6 @@ public final class QueryRule implements Serializable {
 	/**
 	 * 具体规则
 	 * @author 全恒
-	 *
 	 */
 	protected class Rule implements Serializable {
 		
@@ -260,8 +253,8 @@ public final class QueryRule implements Serializable {
 		private int andOr = AND;      //条件规则，默认用and拼接
 
 		public Rule(int paramInt, String paramString) {
-			this.property_name = paramString;
 			this.type = paramInt;
+			this.property_name = paramString;
 		}
 
 		public Rule(int paramInt, String paramString, Object[] paramArrayOfObject) {

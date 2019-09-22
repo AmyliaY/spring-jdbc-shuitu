@@ -18,7 +18,7 @@ public class ResultMsg<T> implements Serializable {
 	private int status;
 
 	/**
-	 * 返回结果的一个文字说明
+	 * 返回结果的文字说明
 	 */
 	private String msg;
 
